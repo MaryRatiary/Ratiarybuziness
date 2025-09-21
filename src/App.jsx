@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Routes, Route, Link } from 'react-router-dom'
 import './App.css'
 import Accueil from './pages/acceuil'
@@ -25,32 +25,63 @@ function Contact() {
 export default function App() {
   // allow page scrolling by default; remove global lock so content sections can scroll
 
+  const [menuOpen, setMenuOpen] = useState(false)
+
   useEffect(() => {
     // background removed from App: each page provides its own visual background
     return () => {}
   }, [])
+
+  // prevent background scrolling and interactions when mobile menu is open
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden'
+      document.body.classList.add('menu-open')
+    } else {
+      document.body.style.overflow = ''
+      document.body.classList.remove('menu-open')
+    }
+    return () => { document.body.style.overflow = ''; document.body.classList.remove('menu-open') }
+  }, [menuOpen])
 
   return (
     <>
       {/* background removed from App — pages manage their own background */}
 
       <div className="app-root" style={{position: 'relative', zIndex: 2, minHeight: '100vh', color: '#e6f0ff', display: 'flex', flexDirection: 'column'}}>
-        <nav className="futuristic-nav ">
+        <nav className={`futuristic-nav ${menuOpen ? 'menu-open' : ''}`}>
           <div className="nav-left">
-            <div className="logo">Bizina</div>
+            <div className="logo">TiaryConsulting</div>
           </div>
-          <div className="nav-center">
-            <Link to="/" className="nav-link">Accueil</Link>
-            <Link to="/services" className="nav-link">Services</Link>
-            <Link to="/about" className="nav-link">À propos</Link>
-            <Link to="/contact" className="nav-link">Nous contacter</Link>
+
+          <div className={`nav-center ${menuOpen ? 'open' : ''}`}>
+            <Link to="/" className="nav-link" onClick={() => setMenuOpen(false)}>Accueil</Link>
+            <Link to="/services" className="nav-link" onClick={() => setMenuOpen(false)}>Services</Link>
+            <Link to="/about" className="nav-link" onClick={() => setMenuOpen(false)}>À propos</Link>
+            <Link to="/contact" className="nav-link" onClick={() => setMenuOpen(false)}>Nous contacter</Link>
           </div>
+
           <div className="nav-right">
             <button className="cta">Demandez un devis</button>
+            <button className={`nav-toggle ${menuOpen ? 'open' : ''}`} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
+              <span className="hamburger" />
+            </button>
           </div>
+
+          {menuOpen && (
+            <div className="mobile-menu" onClick={() => setMenuOpen(false)}>
+              <div className="mobile-menu-inner" onClick={(e) => e.stopPropagation()}>
+                <Link to="/" className="nav-link" onClick={() => setMenuOpen(false)}>Accueil</Link>
+                <Link to="/services" className="nav-link" onClick={() => setMenuOpen(false)}>Services</Link>
+                <Link to="/about" className="nav-link" onClick={() => setMenuOpen(false)}>À propos</Link>
+                <Link to="/contact" className="nav-link" onClick={() => setMenuOpen(false)}>Nous contacter</Link>
+                <button className="cta fullwidth">Demandez un devis</button>
+              </div>
+            </div>
+          )}
         </nav>
 
-        <main style={{flex: 1, position: 'relative'}}>
+        <main aria-hidden={menuOpen} style={{flex: 1, position: 'relative'}}>
           <Routes>
             <Route path="/" element={<Accueil />} />
             <Route path="/services" element={<Services />} />

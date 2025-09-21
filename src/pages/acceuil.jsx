@@ -132,6 +132,24 @@ export default function Accueil() {
 											<div className="badge">0{i + 1}</div>
 										</div>
 
+										{/* mobile-only copy of media header (visible on small screens) */}
+										<div
+											className="mobile-media-header"
+											aria-hidden={!active}
+										>
+											<h3 className="media-title">{s.title}</h3>
+											<p className="media-lead">
+												{s.subtitle} • solutions sur mesure
+											</p>
+											<ul className="media-highlights">
+												{s.highlights.map((h, idx) => (
+													<li key={idx} className="media-highlight">
+														{h}
+													</li>
+												))}
+											</ul>
+										</div>
+
 										<div className="title-block">
 											<h2 className="title-vertical">{s.title}</h2>
 											<div className="title-right">
