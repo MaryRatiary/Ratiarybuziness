@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 
-:root{--neon1:#06b6d4;--neon2:#7c3aed}
+:root{--neon1:#06b6d4;--neon2:#7c3aed; --nav-height: 64px}
 
 /* Global small helpers */
 .service-card { transition: transform .18s ease, box-shadow .18s ease }
@@ -213,6 +213,89 @@ body.menu-open *:not(.mobile-menu):not(.mobile-menu *) { pointer-events: none }
   .nav-toggle { display: inline-flex !important }
   .nav-right { display: flex; align-items: center; gap: 8px }
   .futuristic-nav { padding: 8px 16px }
+
+  /* Hide sidebar entirely on mobile and make the video fill the viewport */
+  .slide-sidebar { display: none !important }
+
+  /* Each slide remains an overlay; make media occupy full viewport */
+  .carousel-slide {
+    position: absolute;
+    inset: 0;
+    display: block;
+    padding: 0;
+    height: 100vh;
+    width: 100%;
+    opacity: 0;
+    transform: translateY(0) scale(1);
+    transition: opacity .45s ease;
+    visibility: hidden;
+  }
+  .carousel-slide.active { opacity: 1; visibility: visible; z-index: 20 }
+
+  .slide-media { position: relative; order: 1; width: 100%; height: 100vh }
+  .media-inner { position: relative; height: 100%; min-height: 100vh }
+  .media-video {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    object-fit: cover !important;
+    display: block;
+    filter: brightness(0.55);
+  }
+
+  /* Keep overlay controls and dots visible on top of the video */
+  .media-overlay-controls { position: absolute; inset: 0; z-index: 30; display: flex; flex-direction: column; justify-content: space-between }
+  .media-overlay-bottom { padding: 12px }
+  .nav-btn { width: 48px; height: 48px }
+  .carousel-dots { left: 50%; bottom: 18px; top: auto; transform: translateX(-50%); z-index: 40 }
+
+  /* Hide any mobile-specific sidebar copy */
+  .mobile-media-header { display: none }
+}
+
+/* ensure video fills the screen under the navbar */
+@media (max-width: 900px) {
+  /* ensure no default body margin */
+  html, body { margin: 0; box-sizing: border-box }
+
+  /* Make nav fixed and give it a known height so video can fill remaining space */
+  .futuristic-nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-height); z-index: 120 }
+
+  /* Carousel slide should have no padding so video can reach edges */
+  .carousel-slide { padding: 0 !important }
+
+  /* Media area occupies full viewport below the nav */
+  .media-inner {
+    position: fixed;
+    top: var(--nav-height);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: calc(100vh - var(--nav-height));
+    min-height: calc(100vh - var(--nav-height));
+    z-index: 5; /* below nav */
+  }
+
+  .slide-media { position: relative; width: 100%; height: 100% }
+
+  .media-video {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    object-fit: cover !important;
+    display: block;
+  }
+
+  /* ensure active slide covers viewport so controls/dots align */
+  .carousel-slide { height: 100vh }
+  .carousel-slide.active { visibility: visible }
+
+  /* prevent other content from being visible under fixed video */
+  .carousel-page, .carousel-container { min-height: 100vh }
 }
 
 /* refine navigation layout on very small screens */
@@ -291,83 +374,155 @@ html, body, #root { height: 100%; overflow: auto }
 
 /* Responsive adjustments for Accueil carousel */
 @media (max-width: 900px) {
+  /* keep carousel as overlay (next/prev), but stack contents vertically inside each slide */
   .carousel-slide {
-    grid-template-columns: 1fr; /* stack sidebar above media */
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
     gap: 12px;
+    align-items: stretch;
+    height: 100vh;
     padding: 18px;
-    height: auto;
-    min-height: auto;
-    align-items: start;
+    opacity: 0;
+    transform: translateY(12px) scale(.995);
+    transition: opacity .45s ease, transform .45s cubic-bezier(.2,.9,.2,1);
+    visibility: hidden;
   }
 
-  .slide-sidebar {
-    width: 100%;
-    border-radius: 12px;
-    padding: 18px;
-    order: 1;
-    display: block;
-    min-height: auto;
-  }
-
-  .slide-media { order: 2; width: 100%; min-height: 36vh }
-
-  .sidebar-inner { padding: 18px }
-
-  .title-vertical {
-    writing-mode: horizontal-tb;
+  .carousel-slide.active {
+    opacity: 1;
     transform: none;
-    font-size: 22px;
-    margin-top: 0;
-    letter-spacing: .6px;
+    visibility: visible;
+    z-index: 20;
   }
 
-  .subtitle { font-size: 16px }
-
-  .avatar-inline { width: 180px; height: auto; max-width: 56%; border-radius: 8px }
-
-  .meta { padding: 10px }
-
-  .desc { max-width: 100%; font-size: 15px }
-
-  .carousel-dots {
-    position: fixed;
-    left: 50%;
-    top: auto;
-    bottom: 18px;
-    transform: translateX(-50%);
-    flex-direction: row;
-    gap: 8px;
-    z-index: 120;
+  /* media (video) appears first and takes a portion of the viewport */
+  .slide-media { order: 1; width: 100%; }
+  .media-inner { position: relative; height: auto; min-height: 34vh; }
+  .media-video {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 220px;
+    max-height: 52vh;
+    object-fit: cover;
+    display: block;
+    filter: brightness(0.6);
+    border-radius: 10px;
   }
 
-  .dot { width: 10px; height: 10px }
+  /* sidebar placed under video so it fills available area and its content is not scrollable */
+  .slide-sidebar {
+    order: 2;
+    width: 100%;
+    /* make sidebar take remaining viewport space under the video */
+    height: calc(100vh - 72vh);
+    max-height: calc(100vh - 72vh);
+    overflow: visible; /* no scrolling */
+    border-radius: 10px;
+    padding: 12px 14px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* space out header, content and footer */
+  }
 
-  .media-header { padding: 12px }
-  .media-title { font-size: 18px }
+  .sidebar-inner {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+    box-sizing: border-box;
+  }
 
-  .media-overlay-bottom { padding: 12px }
-  .nav-btn { width: 44px; height: 44px }
+  /* ensure top block (badge + title) does not grow too much */
+  .sidebar-top { flex: 0 0 auto }
+  .title-block { flex: 0 0 auto }
+
+  /* main description area grows to fill available space proportionally */
+  .sidebar-bottom { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: space-between }
+  .meta-card { flex: 1 1 auto; display: flex; align-items: center }
+  .desc { margin: 0; color: #2b4153; font-size: 15px; max-width: 100% }
+
+  /* make avatar proportionally smaller but consistent */
+  .avatar-inline { width: 110px; height: auto; max-width: 40%; border-radius: 8px; flex: 0 0 auto }
+
+  /* CTA area fixed at bottom of sidebar */
+  .sidebar-footer { flex: 0 0 auto; margin-top: 0 }
 }
 
-/* mobile: move media header content into sidebar and hide in-video header */
-@media (max-width: 900px) {
-  .media-header { display: none }
-  .mobile-media-header { display: block; margin-bottom: 12px }
-  .mobile-media-header .media-title { font-size: 18px; color: #e6f0ff }
-  .mobile-media-header .media-lead { color: rgba(255,255,255,0.85); margin-top: 6px }
-  .mobile-media-header .media-highlights { display: flex; gap: 8px; flex-wrap: wrap }
-  .mobile-media-header .media-highlight { background: rgba(255,255,255,0.03); padding: 6px 8px; border-radius: 999px }
-}
-
-@media (min-width: 901px) {
-  .mobile-media-header { display: none }
-}
-
+/* refine navigation layout on very small screens */
 @media (max-width: 420px) {
-  .avatar-inline { width: 140px; max-width: 66% }
-  .title-vertical { font-size: 18px }
+  .mobile-menu-inner { margin-top: 64px; width: calc(100% - 28px); padding: 14px }
+  .mobile-menu .nav-link { font-size: 16px }
+}
+
+@media (max-width: 900px) {
+  /* make video larger on mobile */
+  .media-inner { position: relative; height: auto; min-height: 68vh; }
+  .media-video {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 320px;
+    max-height: 72vh; /* larger video area */
+    object-fit: cover;
+    display: block;
+    filter: brightness(0.6);
+    border-radius: 10px;
+  }
+
+  /* make sidebar smaller and more compact under the video */
+  .slide-sidebar {
+    order: 2;
+    width: 100%;
+    max-height: calc(100vh - 72vh); /* leaves space for the larger video */
+    overflow: auto;
+    border-radius: 10px;
+    padding: 12px 14px;
+    box-sizing: border-box;
+  }
+
+  .sidebar-inner { padding: 10px }
+  .avatar-inline { width: 120px; height: auto; max-width: 40% }
+  .title-vertical { font-size: 20px }
   .subtitle { font-size: 14px }
-  .media-title { font-size: 16px }
-  .carousel-slide { padding: 12px }
-  .mobile-menu-inner { margin-top: 54px }
+}
+
+@media (max-width: 900px) {
+  /* Prevent page scroll when viewing the carousel on mobile */
+  html, body, #root { height: 100vh; overflow: hidden; }
+  .carousel-container, .carousel-page { height: 100vh; overflow: hidden; }
+
+  /* Ensure active slide fills viewport and doesn't scroll */
+  .carousel-slide { overflow: hidden; touch-action: none; }
+
+  /* Move overlay controls to the bottom and keep them accessible */
+  .media-overlay-top { position: absolute; top: 12px; left: 12px; right: 12px; z-index: 40; }
+  .media-overlay-bottom {
+    position: absolute;
+    bottom: 18px;
+    left: 12px;
+    right: 12px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    z-index: 45;
+    pointer-events: auto;
+    padding: 6px 8px;
+  }
+
+  /* Slightly larger, more tappable nav buttons on mobile */
+  .nav-btn { width: 56px; height: 56px; border-radius: 12px; }
+
+  /* Keep dots visible and centered above the bottom controls */
+  .carousel-dots { position: fixed; left: 50%; bottom: 86px; top: auto; transform: translateX(-50%); z-index: 46; }
+
+  /* hide sidebar so controls are reachable and layout is stable */
+  .slide-sidebar { display: none !important; }
 }
