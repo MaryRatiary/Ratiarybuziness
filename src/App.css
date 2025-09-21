@@ -1,0 +1,209 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+:root{--neon1:#06b6d4;--neon2:#7c3aed}
+
+/* Global small helpers */
+.service-card { transition: transform .18s ease, box-shadow .18s ease }
+.service-card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(2,6,23,0.7) }
+
+/* overlay modal */
+.modal-overlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(2,6,23,0.85); z-index: 9999 }
+.modal-content { width: 90%; max-width: 980px; border-radius: 12px; overflow: hidden; background: #000 }
+
+/* Carousel page styles - updated to fill viewport like the example */
+.carousel-page { font-family: Inter, system-ui, -apple-system, sans-serif; color: #e6f0ff }
+.carousel-container { position: relative }
+
+.carousel-slide { position: absolute; inset: 0; display: grid; grid-template-columns: 360px 1fr; gap: 20px; align-items: stretch; height: 96vh; opacity: 0; transform: translateY(24px) scale(.99); transition: opacity .6s ease, transform .6s cubic-bezier(.2,.9,.2,1); padding: 40px }
+.carousel-slide.active { opacity: 1; transform: translateY(0) scale(1); z-index: 20 }
+
+/* Sidebar improvements: fill area, align items to sides, add accent */
+.slide-sidebar { background: linear-gradient(180deg,#ffffff 0%, #f7fafc 100%); color: #071025; display: flex; align-items: stretch; position: relative; overflow: hidden }
+.slide-sidebar:before { content: ""; position: absolute; left: 0; top: 24px; bottom: 24px; width: 6px; background: linear-gradient(180deg,#06b6d4,#7c3aed); border-radius: 4px; box-shadow: 0 6px 18px rgba(124,58,237,0.08); }
+/* Changed: ensure content stacks from top and meta is above CTA with 30px spacing */
+.sidebar-inner { padding: 28px 32px; display: flex; flex-direction: column; gap: 18px; width: 100%; align-items: flex-start; justify-content: flex-start; min-height: calc(100vh - 80px) }
+.sidebar-top { display: flex; justify-content: flex-start; width: 100% }
+.badge { font-weight: 700; color: #071025; background: transparent; font-size: 14px; padding: 6px 8px; border-radius: 6px; border: 1px solid rgba(7,16,37,0.04) }
+
+/* place title and subtitle to the left side near the top */
+.title-block { display: flex; align-items: flex-start; gap: 12px; width: 100% }
+.title-right { display: flex; flex-direction: column; gap: 8px; align-items: flex-start }
+.title-vertical { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 34px; margin: 0; letter-spacing: 1px; color: #334155; margin-top: 40px }
+.subtitle { font-size: 20px; color: #334155; margin-left: 10px }
+
+/* Inline photo beside title */
+.sidebar-photo-inline { margin-top: 6px }
+.avatar-inline { width: 300px; height: 370px; object-fit: cover; border-radius: 10px; box-shadow: 0 8px 20px rgba(2,6,23,0.08); border: 2px solid rgba(255,255,255,0.96); transform: rotate(-0deg) }
+
+/* meta area: avatar at top-left, text stacked to the right filling space */
+.meta {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  width: 100%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(249,250,251,0.96));
+  padding: 12px 14px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(2,6,23,0.06);
+  border: 1px solid rgba(2,6,23,0.04);
+  transform: translateY(0);
+}
+
+/* avatar with subtle tilt and neon rim effect on hover */
+.avatar {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+  flex-shrink: 0;
+  box-shadow: 0 8px 24px rgba(2,6,23,0.10);
+  transition: transform .28s ease, box-shadow .28s ease, filter .28s ease;
+  transform: rotate(-6deg);
+  border: 4px solid rgba(255,255,255,0.6);
+  background-clip: padding-box;
+}
+.avatar:hover {
+  transform: rotate(0) scale(1.04);
+  box-shadow: 0 18px 48px rgba(2,6,23,0.18);
+  filter: saturate(1.06) contrast(1.02);
+  border-color: rgba(6,182,212,0.15);
+}
+
+/* description with decorative dot and refined typography */
+.desc {
+  margin: 0;
+  color: #2b4153;
+  line-height: 1.45;
+  font-size: 15px;
+  max-width: 240px;
+  position: relative;
+  padding-left: 12px;
+}
+.desc::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 12px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(45deg,#06b6d4,#7c3aed);
+  box-shadow: 0 8px 20px rgba(124,58,237,0.08);
+}
+
+/* footer CTA positioned after meta with fixed spacing (30px) */
+.sidebar-footer { margin-top: 0; width: 100%; display: flex; justify-content: flex-start }
+.btn-ghost { background: none; border: 1px solid rgba(3,7,18,0.06); padding: 10px 14px; border-radius: 8px; cursor: pointer }
+
+/* sidebar bottom area */
+.sidebar-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 30px; align-items: flex-start; padding-bottom: 12px }
+.sidebar-bottom .meta { display: flex; gap: 14px; align-items: center }
+.sidebar-bottom .desc { color: #475569; max-width: 220px }
+.sidebar-bottom .sidebar-footer { margin-top: 0 }
+
+.slide-media { position: relative; overflow: hidden; border-radius: 10px }
+.media-inner { position: relative; height: 100%; min-height: 60vh }
+.media-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; filter: brightness(0.6) }
+.media-overlay-controls { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between }
+.media-overlay-top { padding: 18px }
+.media-overlay-bottom { display: flex; gap: 8px; justify-content: flex-end; padding: 18px }
+.nav-btn { background: rgba(255,255,255,0.06); color: #fff; border: none; width: 54px; height: 54px; border-radius: 50%; font-size: 26px; cursor: pointer }
+
+.carousel-dots { position: fixed; left: 24px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 10px; z-index: 40 }
+.dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.28); border: none; cursor: pointer }
+.dot.active { background: #06b6d4 }
+
+/* Futuristic navbar */
+.futuristic-nav { display: flex; align-items: center; justify-content: space-between; padding: 10px 28px; gap: 12px; position: sticky; top: 0; z-index: 50; backdrop-filter: blur(6px); background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-bottom: 1px solid rgba(255,255,255,0.03) }
+.nav-left .logo { font-weight: 700; color: #9bdcff }
+.nav-center { display: flex; gap: 18px }
+.nav-link { color: #f7fafc }
+.nav-link:hover {
+ color: rgba(1, 183, 32, 0.83)
+
+}
+.nav-right .cta { background: linear-gradient(90deg,#06b6d4,#224a84); border: none; padding: 8px 14px; color: #021029; border-radius: 8px; cursor: pointer }
+
+/* Restore normal scrolling for page */
+html, body, #root { height: 100%; overflow: auto }
+.app-root { min-height: 100vh; overflow: visible }
+
+/* Top centered white rectangle spanning sidebar and media */
+.top-rect { position: absolute; left: 50%; transform: translateX(-50%); top: 28px; width: calc(100% - 160px); max-width: 1200px; height: 86px; background: rgba(255,255,255,0.96); border-radius: 12px; box-shadow: 0 14px 40px rgba(2,6,23,0.12); z-index: 40; display: flex; align-items: center; justify-content: center }
+.top-rect .rect-inner { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 10px 22px }
+.top-rect .rect-left { display: flex; flex-direction: column }
+.rect-kv { font-size: 12px; color: #334155; letter-spacing: 1px }
+.rect-title { font-size: 18px; font-weight: 700; color: #071025 }
+.rect-cta { background: linear-gradient(90deg,#06b6d4,#7c3aed); border: none; padding: 8px 12px; border-radius: 8px; color: #021029; cursor: pointer }
+
+/* Media header above video */
+.media-header { position: relative; z-index: 20; padding: 36px 48px 12px 48px; color: #e6f0ff; animation: headerIn .9s cubic-bezier(.2,.9,.2,1) both }
+@keyframes headerIn {
+  0% { transform: translateY(-12px); opacity: 0; }
+  100% { transform: none; opacity: 1; }
+}
+
+.media-title { margin: 0; font-size: 22px; letter-spacing: .4px; color: #e6f0ff }
+.media-lead { margin: 6px 0 12px 0; opacity: .9; color: rgba(255,255,255,0.85) }
+
+.media-highlights { display: flex; gap: 10px; list-style: none; padding: 0; margin: 0; }
+.media-highlight { background: rgba(255,255,255,0.03); padding: 6px 10px; border-radius: 999px; font-size: 13px; color: rgba(255,255,255,0.9) }
+
+/* avoid text in center: ensure media-header and vertical texts only occupy sides */
+.media-header { max-width: 640px }
+
+/* Futuristic text effects */
+.media-title, .vertical-text, .title-vertical { font-family: 'Orbitron', Inter, system-ui, sans-serif }
+
+.side-vertical { position: absolute; top: 160px; bottom: 160px; display: flex; align-items: center; z-index: 60; pointer-events: none }
+.side-vertical.left { left: 10px }
+.side-vertical.right { right: 10px }
+
+.vertical-text {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 22px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.14);
+  font-weight: 700;
+  text-shadow:
+    0 0 8px rgba(6,182,212,0.08),
+    0 0 16px rgba(124,58,237,0.06);
+  transition: transform .6s ease, opacity .6s ease;
+  opacity: 0.95;
+  will-change: transform, opacity;
+  animation: floatVertical 6s ease-in-out infinite, neonPulse 3s linear infinite;
+}
+
+@keyframes floatVertical {
+  0% { transform: rotate(180deg) translateY(0) }
+  50% { transform: rotate(180deg) translateY(-8px) }
+  100% { transform: rotate(180deg) translateY(0) }
+}
+
+@keyframes neonPulse {
+  0% { text-shadow: 0 0 6px rgba(6,182,212,0.06) }
+  50% { text-shadow: 0 0 18px rgba(6,182,212,0.22), 0 0 28px rgba(124,58,237,0.12) }
+  100% { text-shadow: 0 0 6px rgba(6,182,212,0.06) }
+}
+
+/* Ensure vertical text contrasts enough */
+.side-vertical.left .vertical-text { color: rgba(255, 255, 255, 0.9) }
+.side-vertical.right .vertical-text { color: rgba(155, 208, 219, 0.9) }
+
+/* reduce for mobile */
+@media (max-width: 900px) {
+  .top-rect { left: 50%; transform: translateX(-50%); width: calc(100% - 40px); height: 64px; top: 12px }
+  .media-header { padding: 18px }
+  .media-title { font-size: 18px }
+  .carousel-slide { grid-template-columns: 1fr; padding: 18px }
+  .title-vertical { writing-mode: horizontal-tb; transform: none; font-size: 22px }
+  .carousel-dots { left: 12px }
+  .avatar-centered { width: 140px; height: 96px }
+  .meta-card { max-width: 100% }
+  .avatar-inline { width: 200px; height: 200px }
+  .side-vertical { display: none }
+}
