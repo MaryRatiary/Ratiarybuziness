@@ -494,8 +494,7 @@ html, body, #root { height: 100%; overflow: auto }
 }
 
 @media (max-width: 900px) {
-  /* Prevent page scroll when viewing the carousel on mobile */
-  html, body, #root { height: 100vh; overflow: hidden; }
+  /* Do not disable global page scrolling — limit scroll lock to carousel containers only */
   .carousel-container, .carousel-page { height: 100vh; overflow: hidden; }
 
   /* Ensure active slide fills viewport and doesn't scroll */
@@ -520,9 +519,79 @@ html, body, #root { height: 100%; overflow: auto }
   /* Slightly larger, more tappable nav buttons on mobile */
   .nav-btn { width: 56px; height: 56px; border-radius: 12px; }
 
+  /* Show carousel indicator dots in a horizontal row on mobile */
+  .carousel-dots {
+    left: 50%;
+    bottom: 86px;
+    top: auto;
+    transform: translateX(-50%);
+    z-index: 60;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .carousel-dots .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.28);
+    transition: transform .18s ease, background .18s ease;
+  }
+
+  .carousel-dots .dot.active {
+    background: var(--neon1);
+    transform: scale(1.08);
+  }
+
   /* Keep dots visible and centered above the bottom controls */
   .carousel-dots { position: fixed; left: 50%; bottom: 86px; top: auto; transform: translateX(-50%); z-index: 46; }
 
   /* hide sidebar so controls are reachable and layout is stable */
   .slide-sidebar { display: none !important; }
+}
+
+@media (max-width: 900px) {
+  /* Ensure slide can show controls placed near edges */
+  .carousel-slide { overflow: visible; touch-action: none; }
+
+  /* Overlay controls should sit above the video and be interactive */
+  .media-overlay-controls { z-index: 70; pointer-events: auto; }
+
+  /* Bottom control bar stays fixed above the dots */
+  .media-overlay-bottom {
+    position: absolute;
+    bottom: 18px;
+    left: 12px;
+    right: 12px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    z-index: 72;
+    pointer-events: auto;
+    padding: 6px 8px;
+  }
+
+  /* Make nav buttons clearly visible and tappable */
+  .nav-btn {
+    z-index: 75;
+    background: rgba(0,0,0,0.5);
+    color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(2,6,23,0.36);
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Position explicit prev/next buttons at bottom corners for visibility */
+  .nav-prev { position: absolute; left: 12px; bottom: 22px; }
+  .nav-next { position: absolute; right: 12px; bottom: 22px; }
+
+  /* Ensure dots sit above everything else but below controls */
+  .carousel-dots { z-index: 71; }
 }
