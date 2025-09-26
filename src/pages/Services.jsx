@@ -1,211 +1,261 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import ImageTrail from '../components/ImageTrail'
-import './Services.css'
+
+const servicesData = [
+	{
+		id: 'assistant',
+		title: 'Assistant virtuel',
+		subtitle: 'Automatisation & support',
+		description:
+			'Assistant virtuel intelligent pour automatiser tâches et améliorer la productivité.',
+		avatar: '/photo/photo-assistant.jpg',
+		video: '/video/video-assistant.mp4',
+		highlights: [
+			'Automatisation des process',
+			'Support 24/7',
+			'Intégration API',
+		],
+	},
+	{
+		id: 'dev',
+		title: 'Développement web',
+		subtitle: 'Sites & applications',
+		description:
+			'Création de sites et applications web modernes, performants et accessibles.',
+		avatar: '/photo/photo-codage.jpg',
+		video: '/video/video-codage.mp4',
+		highlights: ['Frontend moderne', 'Backends scalables', 'Design responsive'],
+	},
+	{
+		id: 'montage',
+		title: 'Montage vidéo',
+		subtitle: 'Cut & post-production',
+		description:
+			'Montage professionnel pour contenus marketing, tutoriels et promos.',
+		avatar: '/photo/photo-montage.jpg',
+		video: '/video/video-montage.mp4',
+		highlights: [
+			'Color grading',
+			'Motion graphics',
+			'Optimisation formats web',
+		],
+	},
+]
 
 export default function Services() {
-  // local images from public/photo
-  const localItems = [
-    '/photo/photo-assistant.jpg',
-    '/photo/photo-codage.jpg',
-    '/photo/photo-codage1.jpg',
-    '/photo/photo-codage2.jpg',
-    '/photo/photo-code3.jpg',
-    '/photo/photo-design.jpg',
-    '/photo/photo-design2.jpg',
-    '/photo/photo-montage.jpg',
-    '/photo/photo-montage2.jpg'
-  ]
+	const [index, setIndex] = useState(0)
+	const [trailActive, setTrailActive] = useState(null)
 
-  // decorative items
-  const httpsItems = [
-    'https://picsum.photos/seed/picsum1/400/300',
-    'https://picsum.photos/seed/picsum2/400/300',
-    'https://picsum.photos/seed/picsum3/400/300'
-  ]
+	// small image sets per service (public/photo)
+	const trailMap = {
+		assistant: [
+			'/photo/photo-assistant.jpg',
+			'/photo/photo-design.jpg',
+			'/photo/photo-design2.jpg',
+			'/photo/photo-codage.jpg',
+		],
+		dev: [
+			'/photo/photo-codage.jpg',
+			'/photo/photo-codage1.jpg',
+			'/photo/photo-codage2.jpg',
+			'/photo/code3.jpg',
+			'/photo/photo-design2.jpg',
+		],
+		montage: [
+			'/photo/photo-montage.jpg',
+			'/photo/photo-montage2.jpg',
+			'/photo/photo-design.jpg',
+		],
+	}
 
-  const trailItems = [...localItems, ...httpsItems]
+	function goPrev() {
+		setIndex((i) => (i - 1 + servicesData.length) % servicesData.length)
+	}
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) entry.target.classList.add('in-view')
-        })
-      },
-      { threshold: 0.18 }
-    )
+	function goNext() {
+		setIndex((i) => (i + 1) % servicesData.length)
+	}
 
-    document.querySelectorAll('[data-animate]').forEach((el) => observer.observe(el))
-    document.querySelectorAll('.service-card').forEach((el) => observer.observe(el))
-    document.querySelectorAll('.testimonial-card').forEach((el) => observer.observe(el))
-    return () => observer.disconnect()
-  }, [])
+	function goTo(i) {
+		setIndex(i % servicesData.length)
+	}
 
-  return (
-    <>
-      {/* page-specific fixed background */}
-      <div aria-hidden className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#010a12] via-[#0b1120] to-[#000000]" />
-        <div className="absolute -right-24 -top-20 w-2/3 h-2/3 rounded-full bg-gradient-to-r from-cyan-400/20 to-violet-500/10 blur-3xl animate-pulse" />
-        <div className="absolute left-0 bottom-0 w-1/2 h-1/2 rounded-full bg-gradient-to-tr from-violet-600/10 to-cyan-400/10 blur-3xl animate-pulse" />
-      </div>
+	// keyboard navigation
+	useEffect(() => {
+		function onKey(e) {
+			if (e.key === 'ArrowLeft') goPrev()
+			if (e.key === 'ArrowRight') goNext()
+		}
+		window.addEventListener('keydown', onKey)
+		return () => window.removeEventListener('keydown', onKey)
+	}, [])
 
-      <div className="services-page relative z-10 px-6 py-16 lg:py-24 text-white max-w-7xl mx-auto">
-        {/* Modern hero */}
-        <header className="mb-20" data-animate>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="flex flex-col gap-6">
-              <div className="inline-flex items-center gap-3 px-3 py-1 rounded-full bg-white/10 w-max backdrop-blur-sm border border-white/10">
-                <span className="text-xs text-cyan-300 font-medium">Nos services</span>
-              </div>
+	return (
+		<>
+			{/* page-specific fixed background for Accueil: very dark gradient + subtle radial glow */}
+			<div aria-hidden className="fixed inset-0 z-0 pointer-events-none">
+				<div className="absolute inset-0 bg-gradient-to-b from-[#00060a] via-[#001121] to-[#000000]" />
+				<div className="absolute left-[-10%] top-10 w-[60%] h-[60%] rounded-full bg-gradient-to-r from-violet-700/6 via-cyan-400/6 to-transparent blur-3xl transform -translate-y-8" />
+			</div>
 
-              <h1 className="text-5xl sm:text-6xl font-extrabold leading-tight tracking-tight bg-gradient-to-r from-cyan-400 to-violet-500 bg-clip-text text-transparent">
-                Services modernes pour entreprises ambitieuses
-              </h1>
+			<div
+				className="carousel-page relative z-10 mb-8"
+				style={{ position: 'relative', minHeight: '90vh' }}
+				id="services"
+			>
+				<div className="carousel-container">
+					{servicesData.map((s, i) => {
+						const active = i === index
+						return (
+							<section
+								key={s.id}
+								className={`carousel-slide ${
+									active ? 'active' : ''
+								}`}
+								aria-hidden={!active}
+							>
+								{/* populated centered rectangle overlapping sidebar and media
+                <div className="top-rect" aria-hidden={false}>
+                  <div className="rect-inner">
+                    <div className="rect-left">
+                      <div className="rect-kv">{s.subtitle}</div>
+                      <div className="rect-title">{s.title}</div>
+                    </div>
+                    <div className="rect-right">
+                      <button className="rect-cta">Contactez-nous</button>
+                    </div>
+                  </div>
+                </div> */}
 
-              <p className="text-lg text-gray-300 max-w-xl">
-                Assistant virtuel, développement web et montage vidéo. Nous concevons des expériences digitales rapides, scalables et prêtes pour le futur.
-              </p>
+								<aside className="slide-sidebar rounded-2xl">
+									<div className="sidebar-inner ">
+										<div className="sidebar-top">
+											<div className="badge">0{i + 1}</div>
+										</div>
 
-              <div className="flex gap-4 mt-6">
-                <button className="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-violet-600 text-gray-900 font-semibold shadow-lg hover:shadow-cyan-400/30 transition">
-                  Demander un devis
-                </button>
-                <button className="px-6 py-3 rounded-xl border border-white/20 text-white hover:bg-white/10 transition">
-                  Voir nos réalisations
-                </button>
-              </div>
+										{/* mobile-only: copy of media header moved to sidebar for small screens */}
+										<div className="mobile-media-header" aria-hidden={!active}>
+											<h3 className="media-title">{s.title}</h3>
+											{/* <p className="media-lead">{s.subtitle} • solutions sur mesure</p>
+											<ul className="media-highlights">
+												{s.highlights.map((h, idx) => (
+													<li key={idx} className="media-highlight">{h}</li>
+												))}
+											</ul> */}
+										</div>
 
-              <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-3 text-gray-400 text-sm">
-                <div>⚡ Consultation</div>
-                <div>🎨 Design & prototype</div>
-                <div>🚀 Déploiement</div>
-              </div>
-            </div>
+										<div className="title-block">
+											<h2 className="title-vertical">{s.title}</h2>
+											<div className="title-right">
+												<div className="subtitle">{s.subtitle}</div>
+												<div className="sidebar-photo-inline">
+													<img
+														src={s.avatar}
+														alt={s.title}
+														className="avatar-inline "
+													/>
+												</div>
+											</div>
+										</div>
 
-            <div className="flex justify-center lg:justify-end">
-              <div className="w-[520px] h-[420px] rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-tr from-white/5 to-transparent border border-white/10 backdrop-blur-lg" data-animate>
-                <ImageTrail items={trailItems} variant={1} />
-              </div>
-            </div>
-          </div>
-        </header>
+										{/* bottom area: description + CTA */}
+										<div className="sidebar-bottom">
+											<div className="meta-card">
+												<p className="desc">{s.description}</p>
+											</div>
 
-        {/* Services grid */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20" data-animate>
-          {[
-            {
-              title: 'Assistant virtuel',
-              desc: 'Automatisation intelligente, chatbots et intégrations sur-mesure.',
-              img: '/photo/photo-assistant.jpg',
-              items: ['Automatisation des process', 'Support 24/7', 'Intégration API']
-            },
-            {
-              title: 'Développement web',
-              desc: 'Sites et apps modernes, rapides et maintenables.',
-              img: '/photo/photo-codage.jpg',
-              items: ['Frontend moderne', 'Backends scalables', 'Design responsive']
-            },
-            {
-              title: 'Montage vidéo',
-              desc: 'Post-production, motion design et optimisation multi-format.',
-              img: '/photo/photo-montage.jpg',
-              items: ['Color grading', 'Motion graphics', 'Optimisation formats web']
-            }
-          ].map((service, i) => (
-            <article
-              key={i}
-              className="service-card p-8 rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 shadow-lg hover:shadow-cyan-500/20 hover:-translate-y-2 transition-all duration-500"
-            >
-              <div className="flex items-start gap-4">
-                <img src={service.img} alt={service.title} className="w-16 h-16 rounded-xl object-cover ring-2 ring-cyan-400/40" />
-                <div>
-                  <h3 className="text-xl font-bold text-white">{service.title}</h3>
-                  <p className="text-sm text-gray-300 mt-2">{service.desc}</p>
-                </div>
-              </div>
-              <ul className="mt-5 text-sm text-gray-400 space-y-2 ml-2">
-                {service.items.map((item, idx) => (
-                  <li key={idx}>• {item}</li>
-                ))}
-              </ul>
-            </article>
-          ))}
-        </section>
+											<div className="sidebar-footer">
+												<button className="btn-ghost">
+													En savoir plus
+												</button>
+											</div>
+										</div>
+									</div>
+								</aside>
 
-        {/* Approach */}
-        <section className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start mb-20" data-animate>
-          <div className="lg:col-span-2 p-8 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 shadow-lg">
-            <h2 className="text-3xl font-bold mb-3 text-white">Notre approche</h2>
-            <p className="text-gray-300">
-              Nous associons stratégie produit, design d’expérience et ingénierie pour livrer des solutions robustes et scalables. De l’atelier produit au déploiement, nous restons agiles et orientés résultats.
-            </p>
-          </div>
+								<main className="slide-media">
+									<div className="media-inner">
+										{/* vertical side texts (left & right) - decorative, not in center */}
+										<div className="side-vertical left" aria-hidden>
+											<div className="vertical-text">{s.subtitle}</div>
+										</div>
+										<div className="side-vertical right" aria-hidden>
+											<div className="vertical-text">
+												{s.highlights[0]}
+											</div>
+										</div>
 
-          <div className="p-8 rounded-2xl bg-gradient-to-tr from-cyan-400/10 to-violet-500/10 border border-white/10 shadow-lg backdrop-blur-md">
-            <h4 className="font-semibold mb-3 text-white">Process rapide</h4>
-            <ol className="text-gray-300 list-decimal ml-5 space-y-2">
-              <li>Discovery</li>
-              <li>Prototype</li>
-              <li>Build & ship</li>
-            </ol>
-          </div>
-        </section>
+										<div className="media-header">
+											<h3 className="media-title">
+												 {s.title}
+											</h3>
+											<p className="media-lead">
+												{s.subtitle} • solutions sur mesure
+											</p>
+											<ul className="media-highlights">
+												{s.highlights.map((h, idx) => (
+													<li
+														key={idx}
+														className="media-highlight"
+													>
+														{h}
+													</li>
+												))}
+											</ul>
+										</div>
 
-        {/* Testimonials */}
-        <section className="mb-20" data-animate>
-          <h2 className="text-3xl font-bold mb-10 text-white">Ils nous font confiance</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                text: '« L’assistant virtuel développé par Tik-Tech a réduit notre volume de tickets de 42% et a amélioré la satisfaction client. »',
-                author: '— R. Valentino , CEO'
-              },
-              {
-                text: '« Très pro. Le nouveau site a augmenté notre taux de conversion et la performance côté mobile. »',
-                author: '— R. Mario, Co-CEO'
-              },
-              {
-                text: '« Livraison rapide et respect du brief — le montage vidéo était parfait pour notre campagne. »',
-                author: '— R. Ivan, Producteur'
-              }
-            ].map((t, i) => (
-              <div
-                key={i}
-                className="testimonial-card p-6 rounded-2xl bg-gradient-to-br from-white/5 to-white/2 backdrop-blur-lg border border-white/10 shadow-lg hover:shadow-violet-500/20 transition-all duration-500"
-              >
-                <p className="text-gray-200 italic">{t.text}</p>
-                <footer className="text-gray-400 mt-4 font-medium">{t.author}</footer>
-              </div>
-            ))}
-          </div>
-        </section>
+										<video
+											key={s.video}
+											src={encodeURI(s.video)}
+											muted
+											autoPlay
+											loop
+											playsInline
+											preload="metadata"
+											className="media-video"
+										/>
 
-        {/* Footer */}
-        <footer className="pt-10 pb-6 border-t border-white/10 text-sm text-gray-400 backdrop-blur-lg" data-animate>
-          <div className="flex flex-col md:flex-row justify-between items-start gap-6 max-w-7xl mx-auto">
-            <div>
-              <div className="font-extrabold text-xl text-white">Tik-Tech</div>
-              <div className="text-gray-400 mt-1">Agence digitale — développement, IA & vidéo</div>
-            </div>
+										<div className="media-overlay-controls">
+											<div className="media-overlay-top">
+												{/* placeholder for icons */}
+											</div>
+											<div className="media-overlay-bottom">
+												<button
+													onClick={goPrev}
+													aria-label="Précédent"
+													className="nav-btn"
+												>
+													‹
+												</button>
+												<button
+													onClick={goNext}
+													aria-label="Suivant"
+													className="nav-btn"
+												>
+													›
+												</button>
+											</div>
+										</div>
+									</div>
+								</main>
+							</section>
+						)
+					})}
+				</div>
 
-            <div className="flex gap-10">
-              <div>
-                <h4 className="font-semibold text-white">Services</h4>
-                <ul className="mt-2 space-y-1">
-                  <li>Assistant virtuel</li>
-                  <li>Développement web</li>
-                  <li>Montage vidéo</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-semibold text-white">Contact</h4>
-                <div className="mt-2">contact@tiktech.example</div>
-              </div>
-            </div>
-          </div>
-        </footer>
-      </div>
-    </>
-  )
+				<div className="carousel-dots">
+					{servicesData.map((_, i) => (
+						<button
+							key={i}
+							onClick={() => goTo(i)}
+							className={`dot ${
+								i === index ? 'active' : ''
+							}`}
+							aria-label={`Aller à ${i + 1}`}
+						></button>
+					))}
+				</div>
+			</div>
+		</>
+	)
 }

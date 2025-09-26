@@ -721,3 +721,13 @@ html, body, #root { height: 100%; overflow: auto }
     z-index: 90;
   }
 }
+
+/* Make each page behave as a full-screen landing page */
+.page-root { display: flex; flex-direction: column; min-height: calc(100vh - var(--nav-height)); }
+
+/* Specific landing container for pages that should occupy full viewport */
+.landing-page { display: flex; flex-direction: column; min-height: calc(100vh - var(--nav-height)); }
+
+/* Ensure Accueil footer sticks to bottom */
+.services-page { display: flex; flex-direction: column; min-height: calc(100vh - var(--nav-height)); }
+.services-page > footer { margin-top: auto }
