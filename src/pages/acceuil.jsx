@@ -135,12 +135,12 @@ export default function Accueil() {
 										{/* mobile-only: copy of media header moved to sidebar for small screens */}
 										<div className="mobile-media-header" aria-hidden={!active}>
 											<h3 className="media-title">{s.title}</h3>
-											<p className="media-lead">{s.subtitle} • solutions sur mesure</p>
+											{/* <p className="media-lead">{s.subtitle} • solutions sur mesure</p>
 											<ul className="media-highlights">
 												{s.highlights.map((h, idx) => (
 													<li key={idx} className="media-highlight">{h}</li>
 												))}
-											</ul>
+											</ul> */}
 										</div>
 
 										<div className="title-block">

@@ -323,7 +323,7 @@ html, body, #root { height: 100%; overflow: auto }
   100% { transform: none; opacity: 1; }
 }
 
-.media-title { margin: 0; font-size: 22px; letter-spacing: .4px; color: #e6f0ff }
+.media-title { margin-left: 8px; font-size: 32px; letter-spacing: .4px; color: #5c85c3 }
 .media-lead { margin: 6px 0 12px 0; opacity: .9; color: rgba(255,255,255,0.85) }
 
 .media-highlights { display: flex; gap: 10px; list-style: none; padding: 0; margin: 0; }
@@ -709,4 +709,15 @@ html, body, #root { height: 100%; overflow: auto }
   }
 
   .mobile-close:hover { transform: scale(1.02); box-shadow: 0 8px 24px rgba(124,58,237,0.08); }
+}
+
+@media (min-width: 900px) {
+  /* Position highlights at bottom-left on desktop only (no style changes) */
+  .media-inner { position: relative; }
+  .media-highlights {
+    position: absolute;
+    left: 24px;
+    bottom: 0px;
+    z-index: 90;
+  }
 }
